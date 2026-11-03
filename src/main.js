@@ -32,6 +32,9 @@ sun.shadow.mapSize.set(2048, 2048);
 Object.assign(sun.shadow.camera, { left: -42, right: 42, top: 42, bottom: -42, near: 1, far: 140 });
 sun.shadow.bias = -0.0006; sun.shadow.normalBias = 0.03;
 scene.add(sun, sun.target);
+const SH_TEXEL = 84 / 2048;
+const SUN_R = new THREE.Vector3().crossVectors(new THREE.Vector3(0, 1, 0), sunDir).normalize();
+const SUN_U = new THREE.Vector3().crossVectors(sunDir, SUN_R).normalize();
 const hemi = new THREE.HemisphereLight(NIGHT ? 0x3a4a80 : 0x8a8ee0, NIGHT ? 0x1a1a2a : 0x4a3a40, NIGHT ? 1.6 : 2.5);
 scene.add(hemi);
 const fill = new THREE.DirectionalLight(NIGHT ? 0x3a4a90 : 0x7f86d8, NIGHT ? 0.6 : 1.3); // 冷色补光，照亮右侧断面
@@ -80,7 +83,7 @@ function placeCamera() {
   const r = P.dot(RIGHT), u = P.dot(UPV);
   const rs = Math.round(r / texel) * texel, us = Math.round(u / texel) * texel;
   P.addScaledVector(RIGHT, rs - r).addScaledVector(UPV, us - u);
-  shift.set(-(rs - r) / texel, -(us - u) / texel);
+  shift.set((rs - r) / texel, (us - u) / texel); // 补偿方向与吸附方向一致
   camera.position.copy(P); camera.up.set(0, 1, 0); camera.lookAt(P.clone().sub(camDir));
   U.zoom.value = CLOSE / v * 1.6;
   return texel;
@@ -151,7 +154,10 @@ function update(dt) {
   cam.focus.lerp(tgt, Math.min(1, dt * 3.0));
   if (camOverride) { cam.focus.copy(camOverride.focus); cam.view = camOverride.view; }
   // 阴影相机跟随焦点（保持阴影精度）
-  sun.target.position.set(Math.round(cam.focus.x), 0, Math.round(cam.focus.z));
+  // 阴影中心吸附到阴影贴图像素网格（在光源空间里），避免阴影边缘跳动
+  const T = new THREE.Vector3(cam.focus.x, 0, cam.focus.z);
+  const a = Math.round(T.dot(SUN_R) / SH_TEXEL) * SH_TEXEL, b = Math.round(T.dot(SUN_U) / SH_TEXEL) * SH_TEXEL, c = T.dot(sunDir);
+  sun.target.position.set(0, 0, 0).addScaledVector(SUN_R, a).addScaledVector(SUN_U, b).addScaledVector(sunDir, c);
   sun.position.copy(sun.target.position).addScaledVector(sunDir, 60);
 }
 let camOverride = null;
