@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>废城微景观 · Ruins Diorama</title>
+<style>
+  html,body{margin:0;height:100%;overflow:hidden;background:#1b1d33}
+  #gl{display:block;width:100vw;height:100vh;image-rendering:pixelated;cursor:crosshair}
+  #hint{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);font:12px/1.4 ui-monospace,Menlo,monospace;
+    color:#e9dcc8;background:rgba(20,18,30,.55);padding:6px 12px;border-radius:3px;letter-spacing:.04em;
+    transition:opacity 1.5s;pointer-events:none;white-space:nowrap}
+</style>
+</head>
+<body>
+<canvas id="gl"></canvas>
+<div id="hint">WASD / 方向键 移动 · 点击地面 前往 · 滚轮 缩放 · O 总览</div>
+<script type="module" src="./src/main.js"></script>
+</body>
+</html>
