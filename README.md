@@ -76,3 +76,7 @@ src/particles.js   GPU 粒子
 src/batch.js       实例化合批工具
 scripts/shoot.mjs  无头截图 / 录制视频
 ```
+
+
+## 子项目
+- [`ascii-temple/`](ascii-temple/)：山寺夕照 · ASCII 移轴微缩场景（Three.js 渲染后转成彩色字符）

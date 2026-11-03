@@ -1,0 +1,11 @@
+{
+  "name": "ascii-temple",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node scripts/serve.mjs . 5173",
+    "build": "esbuild main.js --bundle --format=esm --outfile=build/main.js"
+  },
+  "dependencies": { "three": "^0.187.0" },
+  "devDependencies": { "esbuild": "^0.28.2" }
+}
